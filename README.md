@@ -10,7 +10,7 @@ The iOS 10 `UIViewPropertyAnimator` enables us to make interactive animations. T
 
 # Requirements
 
-* Xcode 8 beta 4
+* Xcode 8
 * iOS 10
 * Swift 3.0
 
