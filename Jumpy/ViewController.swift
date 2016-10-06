@@ -23,7 +23,7 @@ let colors = [#colorLiteral(red: 0.1529411765, green: 0.2196078431, blue: 0.2980
 
 final class ViewController: UIViewController {
   
-  private enum State {
+  fileprivate enum State {
     case ready
     case playing
     case over
@@ -33,21 +33,21 @@ final class ViewController: UIViewController {
   @IBOutlet var scoreLabel: UILabel!
   @IBOutlet var maxScoreLabel: UILabel!
   
-  private var playerAnimator: UIViewPropertyAnimator?
-  private var playerRotator: UIViewPropertyAnimator?
-  private var player: UIView = UIView(frame: CGRect(x: 0, y: 0, width: playerHeight, height: playerHeight))
+  fileprivate var playerAnimator: UIViewPropertyAnimator?
+  fileprivate var playerRotator: UIViewPropertyAnimator?
+  fileprivate var player: UIView = UIView(frame: CGRect(x: 0, y: 0, width: playerHeight, height: playerHeight))
   
-  private var displayLink: CADisplayLink?
-  private var state: State = .ready
+  fileprivate var displayLink: CADisplayLink?
+  fileprivate var state: State = .ready
   
-  private var obstacles: [UIView] = []
-  private var obstacleAnimators: [UIViewPropertyAnimator] = []
-  private var obstacleTimer: Timer?
+  fileprivate var obstacles: [UIView] = []
+  fileprivate var obstacleAnimators: [UIViewPropertyAnimator] = []
+  fileprivate var obstacleTimer: Timer?
   
-  private var score: Int = 0
-  private var maxScore: Int = 0
+  fileprivate var score: Int = 0
+  fileprivate var maxScore: Int = 0
   
-  private var shouldRotate: Bool = false
+  fileprivate var shouldRotate: Bool = false
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -118,7 +118,7 @@ extension ViewController {
 
 extension ViewController {
 
-  private func randomColor() -> UIColor {
+  fileprivate func randomColor() -> UIColor {
     return colors[Int(arc4random_uniform(UInt32(colors.count)))]
   }
   
@@ -130,7 +130,7 @@ extension ViewController {
     return obstacle
   }
 
-  func spawnObstacle(outsideView: Bool = false) {
+  func spawnObstacle(_ outsideView: Bool = false) {
     let color = randomColor()
     let bottomObstacle = createObstacle()
     let factor: CGFloat = outsideView ? 1.25 : 0.75
@@ -217,7 +217,7 @@ extension ViewController {
   
   func startObstacleSpawnTimer() {
     let interval = view.frame.size.width*0.5/obstacleVelocity
-    obstacleTimer = Timer.scheduledTimer(timeInterval: TimeInterval(interval), target: self, selector: #selector(gerenateObstacle(timer:)), userInfo: nil, repeats: true)
+    obstacleTimer = Timer.scheduledTimer(timeInterval: TimeInterval(interval), target: self, selector: #selector(gerenateObstacle(_:)), userInfo: nil, repeats: true)
   }
   
   func stopObstacleSpawnTimer() {
@@ -226,8 +226,8 @@ extension ViewController {
     }
   }
   
-  func gerenateObstacle(timer: Timer) {
-    spawnObstacle(outsideView: true)
+  func gerenateObstacle(_ timer: Timer) {
+    spawnObstacle(true)
     moveObstacles()
   }
 }
@@ -237,7 +237,7 @@ extension ViewController {
   func resetGame() {
     removeObstacles()
     spawnObstacle()
-    spawnObstacle(outsideView: true)
+    spawnObstacle(true)
     resetPlayerPosition()
     tapToStartLabel.isHidden = false
     score = 0
@@ -278,7 +278,7 @@ extension ViewController {
     obstacleAnimators = []
   }
   
-  func rotate(duration: TimeInterval) {
+  func rotate(_ duration: TimeInterval) {
     guard shouldRotate else { return }
 
     let cubicParameters = UICubicTimingParameters(controlPoint1: CGPoint(x: 0.0, y: 0.4), controlPoint2: CGPoint(x: 0.4, y: 1.0))
@@ -286,10 +286,10 @@ extension ViewController {
     playerRotator = UIViewPropertyAnimator(duration: duration, timingParameters: cubicParameters)
   
     playerRotator?.addAnimations { // curve: .easeOut
-      self.player.transform = self.player.transform.rotate(rotationAngle)
+      self.player.transform = self.player.transform.rotated(by: rotationAngle)
     }
     playerRotator?.addCompletion { _ in
-      self.rotate(duration: duration)
+      self.rotate(duration)
     }
     playerRotator?.startAnimation()
   }
@@ -313,7 +313,7 @@ extension ViewController {
     }
     playerAnimator?.startAnimation()
     
-    rotate(duration: Double(duration)/2.0)
+    rotate(Double(duration)/2.0)
   }
   
   func fall() {
